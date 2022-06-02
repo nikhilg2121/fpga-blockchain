@@ -1,0 +1,33 @@
+$date
+	Fri Jun 03 03:30:48 2022
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module tb_com $end
+$scope module here $end
+$var wire 1 ! a $end
+$var wire 1 " b $end
+$var wire 1 # c $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+1#
+0"
+0!
+$end
+#20
+0#
+1!
+#40
+1"
+0!
+#60
+1#
+1!
+#80
