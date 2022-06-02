@@ -1,0 +1,85 @@
+$date
+	Fri Jun 03 00:31:04 2022
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module tb $end
+$var wire 1 ! O $end
+$var wire 1 " COUT $end
+$var reg 1 # A $end
+$var reg 1 $ B $end
+$var reg 1 % CIN $end
+$scope module fa $end
+$var wire 1 # a $end
+$var wire 1 $ b $end
+$var wire 1 % cin $end
+$var wire 1 " cout $end
+$var wire 1 ! o $end
+$upscope $end
+$scope begin $ivl_for_loop0 $end
+$var integer 32 & k [31:0] $end
+$scope begin $ivl_for_loop1 $end
+$var integer 32 ' i [31:0] $end
+$scope begin $ivl_for_loop2 $end
+$var integer 32 ( j [31:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+b0 (
+b0 '
+b0 &
+0%
+0$
+0#
+0"
+0!
+$end
+#10
+1!
+1$
+b1 (
+#20
+0$
+1#
+b1 '
+b0 (
+#30
+0!
+1"
+1$
+b1 (
+#40
+0"
+1!
+1%
+0$
+0#
+b1 &
+b0 '
+b0 (
+#50
+1"
+0!
+1$
+b1 (
+#60
+0$
+1#
+b1 '
+b0 (
+#70
+1!
+1$
+b1 (
+#80
+b10 &
+b10 '
+b10 (
