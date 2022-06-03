@@ -1,0 +1,39 @@
+8 bit full adder design module--------
+module eba(input[7:0]a,input[7:0]b,input prevc, output[7:0]s,output c);
+wire[6:0]c;
+obfad x1(a[0],b[0],prevc,s[0],c[0]);  //obfad created in q1
+obfad x2(a[1],b[1],c[0],s[1],c[1]);   //order maintained for proper connection
+obfad x3(a[2],b[2],c[1],s[2],c[2]);
+obfad x4(a[3],b[3],c[2],s[3],c[3]);
+obfad x5(a[4],b[4],c[3],s[4],c[4]);
+obfad x6(a[5],b[5],c[4],s[5],c[5]);
+obfad x7(a[6],b[6],c[5],s[6],c[6]);
+obfad x8(a[7],b[7],c[6],s[7],c[7]);
+endmodule
+
+
+
+8 bit adder test bench---------
+module eba_tb;
+reg[7:0]a;
+reg[7:0]b;
+reg prevc;
+wire [7:0]s;
+wire c;
+eba uut(a,b,prevc,s,c);
+initial begin
+#10 a=8’b00000001;b=8’b00000001;prevc=1’b0;
+#5 a=8’b00000001;b=8’b00000001;prevc=1’b1;
+#10 a=8’b00000010;b=8’b00000011;prevc=1’b0;
+#5 a=8’b10000001;b=8’b10000001;prevc=1’b0;
+#10 a=8’b00011001;b=8’b00110001;prevc=1’b0;
+#5 a=8’b00000011;b=8’b00000011;prevc=1’b1;
+#10 a=8’b11111111;b=8’b00000001;prevc=1’b0;
+#5 a=8’b11111111;b=8’b00000000;prevc=1’b1;
+#10 a=8’b11111111;b=8’b11111111;prevc=1’b0;
+$finish;
+end
+endmodule
+
+
+

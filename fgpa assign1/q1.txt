@@ -1,0 +1,73 @@
+One bit half adder design file-------
+
+module obhad(input a,input b,output s, output c);
+assign s= ((~a&b)|(a&~b));
+assign c= a&b;
+endmodule
+
+
+one bit full adder design file--------
+
+
+module obfad(input a,input b,input prevc, output s, output c, );
+wire axb;
+assign axb= (~a&b)|(a&~b);
+assign s= (~axb&prevc)|(axb&~prevc);
+assign c= (a&b)|(prevc&axb);
+endmodule;
+
+
+one bit half adder test bench---------
+
+module obhad_tb;
+
+reg a,b;
+wire s,c;
+
+obhad inst (a,b,s,c); //order preserved for proper connections
+initial begin
+   a=0;
+   b=0;
+#10
+   a=1;
+   b=0;
+#10
+   a=0;
+   b=1;
+#10
+   a=1;
+   b=1;
+$finish
+end
+endmodule
+
+
+
+one bit full adder test bench---------
+
+module obfad_tb;
+
+reg a;
+reg b;
+reg prevc;
+
+wire s;
+wire c;
+
+obfad inst1 (a,b,prevc,s,c); //order maintained for right connections
+
+initial begin 
+a=1'b0;
+b=1'b0;
+c=1'b0;
+end
+always #2 a=a+1'b1;
+always #3 b=b+1'b1;
+always #4 c=c+1'b1;
+initial #50 $finish;
+
+endmodule
+
+
+
+
