@@ -1,0 +1,34 @@
+one bit comparator design module--------
+module obc(input a,input b, output agb,output aeb, output alb);
+wire x;
+wire y;
+assign x=~a&b;
+assign y=a&~b;
+assign aeb=~(x|y);
+assign alb=x;
+assign agb=y;
+endmodule
+
+
+one bit comparator test bench----------
+
+module obc_tb;
+reg a;
+reg b;
+wire agb,aeb,alb;
+obc inst(a,b,agb,aeb,alb);
+initial begin
+a=0;
+b=0;
+#5
+a=1;
+b=0;
+#10
+a=0;
+b=1;
+#5
+a=1;
+b=1;
+$finish
+end
+endmodule

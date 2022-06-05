@@ -1,0 +1,36 @@
+8 bit comparator design module--------
+
+module ebc(input[7:0]a;
+           input[7:0]b;
+           output agb;
+           output aeb;
+           output alb;)
+
+
+
+
+
+8 bit comparator test bench-------
+
+module ebc_tb;
+reg[7:0]a;
+reg[7:0]b;
+wire agb;
+wire aeb;
+wire alb;
+
+ebc uvt(a,b,agb,aeb,alb);
+initial begin
+#5 a=8'b0;b=8'b0;
+#10 a=8'd20;b=8'd25;
+#10 a=8'd16;b=8'd9;
+#5 a=8'd32;b=8'd32;
+#10 a=8'd8;b=8'd42;
+#5 a=8'd24;b=8'd12;
+#10 a=8'd7;b=8'd3;
+#10 a=8'd63;b=8'd63;
+$finish;
+end 
+endmodule
+
+
