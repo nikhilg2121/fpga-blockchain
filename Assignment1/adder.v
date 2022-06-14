@@ -1,5 +1,6 @@
 module one_bit_full_adder(C_out,S,A,B,C_in);
 
+
     input A,B,C_in;
     output C_out,S;
 
