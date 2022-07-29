@@ -44,6 +44,7 @@ bits and the transfers the data bus to the receiving end.
 
 This is the final assignment of the project where we actually connect all the dots and actually implement the main aim of our project.  
 
+##### Block RAM
 Block RAMs (or BRAMs) stands for Block Random Access Memory. Block
 RAMs are used for storing large amounts of data inside of the FPGA. We have used BRAM to store all the tables corresponding to the key-value database.
 We have used Single Port Block
@@ -73,6 +74,7 @@ be used as a key. Similarly, the value address 0 is not alloted to any value, as
 is used to indicate an uninitialised index in the key to value address mapping
 tables.  
 
+##### Operations on KVS
 Then these arrays are used for the main Key Value Store/Database operations : INSERT, SEARCH
 and TRANSACT:  
 - INSERT: This operation is used to insert a key-value pair (using analogy of a bank account,
@@ -84,57 +86,77 @@ implement the search which reduces the time complexity to O(1)(worst case).
 The Key goes through the Hashing functions which gives us 2 possible indices
 where the key might be stored at. We then check both these locations for the
 Key. If it is present in either the locations then we return the value corresponding to the key.  
+  
+- TRANSACT: This operation either debits or credits amount from the value of the given key. The input transact_kind is used to tell whether the amount is to be debited or credited. 0 stands for debit, 1 for credit.   
+  
+NOTE: The INSERT operation has been so designed that it imposes the restriction that the value for any key must be non zero.  
 
-The file create_bram.v contains code for the search and transact operations on the block ram entries.
-It has been tested using the test bench file - create_bram_tb.v
+The file create_bram.v contains code for initialising the BRAM and implementations of these operations on the key-value stores.
+It has been tested using the test bench file - create_bram_tb.v.  
 
-Update: The create_bram.v file now contains working code for insert operation on block ram.
-It has been tested using the create_bram_tb.v - testbench file.
+##### Data Packet  
 
-Some conditions:
-No key can have value 0
-Value stored must be non zero for any key
+The data packet is of the following form:
 
-1. The incoming packet must have the format:
+- for refer:
+command-code 1 byte  
+key 4 bytes  
+trailing zero 1 byte (00000000) used for detection purposes.  
 
-for refer:
-command-code 1 byte
-key 4 bytes
-trailing zero 1 byte (00000000) used for detection purposes.
-
-for transfer:
-command-code 1 byte
-key-debit 4 bytes
-key-credit 4 bytes
-transfer amnt
-trailing zero 1 byte
-
-for issue:
-command-code 1 byte
-key 4 bytes
-amnt 4 bytes
-trailing zero 1 byte
-
-for create:
-command-code
-key
-initial balance
-trailing zero
+- for transfer:
+command-code 1 byte  
+key-debit 4 bytes  
+key-credit 4 bytes  
+transfer amnt  
+trailing zero 1 byte  
 
 
-IGNORE this important note below. No restrictions, it works.
+- for issue:
+command-code 1 byte  
+key 4 bytes  
+amount 4 bytes  
+trailing zero 1 byte  
 
-Important note:
+- for create:
+command-code 1 byte  
+key 4 bytes  
+initial balance 4 bytes  
+trailing zero 1 byte  
+  
+##### Core Modules and Command Extractor
+The main purpose of the Core Modules - refer.v; transfer.v; issue.v; create.v is to store the data received by
+the receiver module, and use the data for executing the
+4 functions - REFER, TRANSFER, ISSUE and CREATE.  
 
-While sending multiple commands, the different commands must be such that previous command's zero byte must coincide with the reset signal.
-i.e. as each byte requires #freq time for transmission along the communication channel, in this period only the reset must be done.
-Such that the NEGEDGE of reset corresponds to the beginning of the next command.
+- create.v: The data is received by the receiver module of UDP/UART. Each time a new byte of
+data is received, the receiver module negates the value of newbyt. The always
+block always@(newbyt) is hence triggered, which stores this newly received byte
+of data into an array [7:0]packet[11:0]. Once all the required number of bytes
+are stored into this array, a trigger sets off, which leads to the execution of
+another always block. It is responsible for updating the output values of the
+output ports- signal, key and value. The main extractor module in cmdextract.v
+detects a change in the outputs of the create module through an always block.
+This always block then updates the values of the inputs of the create bram
+module, such that the INSERT functionality detailed in the previous chapter is
+triggered. This results in the creation and insertion of a new key-value pair into
+the hash tables.  
 
-command 1 ... zero byte--> 00000000
-                                   |
-                                   |
-                       negedge reset
-                                   |
-                                   |
-                                    next command
+- refer.v: Similar to the create module, the incoming data is stored byte-wise in the array.
+Once all bytes of the packet are received, a block is triggered which changes
+the outputs- signal and key, appropriately. The extractor module detects these
+changes and directs these values to the create bram module. The SEARCH
+functionality is triggered and the value corresponding to the key is returned.
+  
+ - issue.v: Similar to the create module, the incoming data is stored byte-wise in the array.
+Once all bytes of the packet are received, a block is triggered which changes the
+outputs- signal, key, transact value, and transact kind appropriately. The extractor module detects these changes and directs these values to the create bram
+module. The TRANSACT functionality is triggered and the required amount
+is issued to the key.  
 
+- transfer.v: This module invokes the TRANSACT functionality of our main code, twice. To
+take input from the UDP we follow a similar algorithm, getting Keys participating in the transaction. The the outputs are updated sequentially, first to debit
+the amount from the sender, and then credit it to the receiver. The extractor module detects these changes and directs these values to the create bram
+module Thus, the transaction takes place.  
+
+These modules are controlled by the command extractor module - cmdextract.v, which directs the data to the correct core module. 
+This has been tested using the test bench cmd_tb.v.
