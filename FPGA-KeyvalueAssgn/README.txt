@@ -33,20 +33,3 @@ command-code
 key
 initial balance
 trailing zero
-
-
-IGNORE this important note below. No restrictions, it works.
-
-Important note:
-
-While sending multiple commands, the different commands must be such that previous command's zero byte must coincide with the reset signal.
-i.e. as each byte requires #freq time for transmission along the communication channel, in this period only the reset must be done.
-Such that the NEGEDGE of reset corresponds to the beginning of the next command.
-
-command 1 ... zero byte--> 00000000
-                                   |
-                                   |
-                       negedge reset
-                                   |
-                                   |
-                                    next command
