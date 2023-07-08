@@ -1,0 +1,6 @@
+Implementation of Cuckoo Hashing:
+Read About Cuckoo Hashing From Question No. 3 of Recruitment Test of Electronics Club.
+To Implement Cuckoo Hashing We need to create 
+Module-1: this module will output two tables on a specific output, these two tables will have already some values stored.
+Module-2: This module will generate data of values with their corresponding indexes in two tables.
+Module-3: This is Top module file this will use the other two and will insert new value.
